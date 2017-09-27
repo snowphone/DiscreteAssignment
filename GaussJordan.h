@@ -32,6 +32,31 @@ void Print(GaussJordan* self)
 //가우스-조던 소거법 사용. 
 void Solve(GaussJordan* self)
 {
+	//모든 대각성분이 0이 아닌지 확인하고, 
+	//0인 경우, 그 아래 행들중에서 하나를 골라 그 행을 현재 행에 더한다.
+	for (int diagonal = 0; diagonal < self->row; diagonal++)
+	{
+		if (!self->matrix[diagonal][diagonal])
+		{
+			for (int r = diagonal+1; r < self->row; r++)
+			{
+				if (self->matrix[r][diagonal])
+				{
+					//diagonal행 += r행
+					for (int c = 0; c < self->column; c++)
+					{
+						self->matrix[diagonal][c] += self->matrix[r][c];
+					}
+					break;
+				}
+			}
+		}
+	}
+
+
+
+
+	
 	//[0,rowInit) 까지는 가우스 소거법 완료
 	for (int diagonal = 0; diagonal < self->row; diagonal++)
 	{
