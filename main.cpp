@@ -2,7 +2,8 @@
 
 int main() {
 	GaussJordan matrix;
-	setMatrix(&matrix);
+	Set(&matrix);
+	Solve(&matrix);
 	
-	print(&matrix);
+	Print(&matrix);
 }

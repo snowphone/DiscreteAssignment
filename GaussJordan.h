@@ -1,5 +1,6 @@
 #ifndef _GAUSSJORDAN_H
 #define _GAUSSJORDAN_H
+
 #ifdef _MSC_VER
 #pragma warning(disable : 4996)  
 #endif
@@ -7,40 +8,84 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+typedef float Type;
 typedef struct {
-	static void(*setMatrix)(void*);
+	//static void(*Set)(void*);
 
-	double** matrix;
-	unsigned int row, col;
+	Type** matrix;
+	unsigned int row, column;
 }GaussJordan;
 
-void setMatrix(GaussJordan * self) {
 
-	printf("Matrix size: ");
-	scanf("%d", &(self->row));
-	self->col = self->row + 1;
-	puts("input elements: ");
-	self->matrix = (double**)malloc(sizeof(double*) * self->row);
-	self->matrix[0] = (double*)malloc(sizeof(double) * self->row * self->col);
-	for (int i = 1; i<self->row; ++i) {
-		self->matrix[i] = self->matrix[i - 1] + self->col;
-	}
-	double* p = &(self->matrix[0][0]);
-	for (int i = 0; i < self->row * self->col; i++)
-	{
-		scanf("%d", p++);
-	}
-}
-void print(GaussJordan* self)
+void Print(GaussJordan* self)
 {
+	puts("output result: ");
 	for (int i = 0; i < self->row; i++)
 	{
-		for (int j = 0; j < self->col; j++)
+		for (int j = 0; j < self->column; j++)
 		{
-			printf("%d ", self->matrix[i][j]);
+			printf("%g ", self->matrix[i][j]);
 		}
 		puts("");
 	}
 }
+//가우스-조던 소거법 사용. 
+void Solve(GaussJordan* self)
+{
+	//[0,rowInit) 까지는 가우스 소거법 완료
+	for (int diagonal = 0; diagonal < self->row; diagonal++)
+	{
+		//대각성분이 1이 되도록 그 행에 대해 연산한다.
+		double multiplier = self->matrix[diagonal][diagonal];
+
+		for (int c = diagonal; c < self->column; c++) { self->matrix[diagonal][c] /= multiplier; }
+
+		//나머지 행의 rowInit열을 0으로 만드는 연산을 진행한다.
+		for (int r = diagonal+1; r < self->row; r++)
+		{
+			//multiplier을 구한다.
+			multiplier = self->matrix[r][diagonal] / self->matrix[diagonal][diagonal];
+
+			//rowInit 이후 행에 대해서 대각성분 이전의 성분을 0으로 만든다.
+			for (int c = diagonal; c < self->column; c++)
+			{
+				self->matrix[r][c] -= multiplier * self->matrix[diagonal][c];
+			}
+
+		}
+	}
+
+	//Gordan 소거법 사용
+	//대각성분을 지정
+	for (int diagonal = self->row - 1; diagonal >= 0; diagonal--)
+	{
+		for (int r = diagonal-1; r >= 0; r--)
+		{
+			double multiplier = self->matrix[r][diagonal] / self->matrix[diagonal][diagonal];
+			self->matrix[r][diagonal] -= multiplier * self->matrix[diagonal][diagonal];
+			self->matrix[r][self->column-1] -= multiplier * self->matrix[diagonal][self->column-1];
+		}
+	}
+
+}
+void Set(GaussJordan * self)
+{
+
+	printf("Matrix size: ");
+	scanf("%u", &(self->row));
+	self->column = self->row + 1;
+	puts("input elements: ");
+	self->matrix = (Type**)malloc(sizeof(Type*) * self->row);
+	self->matrix[0] = (Type*)malloc(sizeof(Type) * self->row * self->column);
+	for (int i = 1; i < self->row; ++i) {
+		self->matrix[i] = self->matrix[i - 1] + self->column;
+	}
+	Type* p = &(self->matrix[0][0]);
+	for (int i = 0; i < self->row * self->column; i++)
+	{
+		scanf("%f", p++);
+	}
+}
+
 
 #endif // !_GAUSSJORDAN_H
