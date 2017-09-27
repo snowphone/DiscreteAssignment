@@ -7,8 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-typedef float Type;
+typedef double Type;
 typedef struct {
 	//static void(*Set)(void*);
 
@@ -108,7 +107,7 @@ void Set(GaussJordan * self)
 	Type* p = &(self->matrix[0][0]);
 	for (int i = 0; i < self->row * self->column; i++)
 	{
-		scanf("%f", p++);
+		scanf("%lf", p++);
 	}
 }
 
